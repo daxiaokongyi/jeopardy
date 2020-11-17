@@ -8,15 +8,34 @@
       <title>Jeopardy</title>
       <link href="https://fonts.googleapis.com/css?family=Copse&display=swap"
             rel="stylesheet">
+      <link rel="preconnect" href="https://fonts.gstatic.com">
+      <link href="https://fonts.googleapis.com/css2?family=Balsamiq+Sans&display=swap" rel="stylesheet">
       <link rel="stylesheet" href="jeopardy.css">
 </head>
 <body>
-      <div class="loader"></div>
-      <table>
-            <thead></thead>
-            <tbody></tbody>
-      </table>
-      <button id="restart">Start Game</button>
+      <div class="background">
+            <h1>Jeopardy</h1>
+            <form class="setupGame">
+                  <div>
+                        <label for="playerOne">Player One: </label>
+                        <input type="text" id="one">
+                  </div>
+                  <div>
+                        <label for="playerTwo">Player Two: </label>
+                        <input type="text" id="Two">
+                  </div>
+            </form>
+            <div class="startGame">
+                  <div class="loader"></div>
+                  <div class="players"></div>
+                  <table>
+                        <thead></thead>
+                        <tbody></tbody>
+                  </table>
+            </div>
+            <button id="restart">Start Game</button>
+      </div>
+
       <script src="https://unpkg.com/jquery"></script>
       <script src="https://unpkg.com/axios/dist/axios.js"></script>
       <script src="https://unpkg.com/lodash"></script>

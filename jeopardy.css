@@ -9,14 +9,34 @@
 * {
   margin: 0;
   padding: 0;
+  font-family: 'Balsamiq Sans', cursive;
 }
 
-html, body {
+.background {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
+}
+
+/* --- title --- */
+h1 {
+  margin: 1rem;
+  font-size: 3rem;
+}
+
+/* --- form --- */
+form {
+  border: 1px solid blue;
+}
+
+input {
+  margin: 0.5rem ;
+}
+
+.setupGame,.startGame {
+  width: 80%;
 }
 
 th {
@@ -57,6 +77,29 @@ thead th {
   padding: 0.8rem;
 }
 
+table {
+  margin: 0 auto;
+}
+
+.yes {
+  background-color: green;
+}
+
+.no {
+  background-color: red;
+}
+
+.yes,.no {
+  border: 1px solid white;
+  border-radius: 0.1rem;
+  color: white;
+  padding: 0.1rem;
+}
+
+button, input:hover {
+  cursor: pointer;
+}
+
 .loader {
   position: fixed;
   display: block;
@@ -82,3 +125,9 @@ thead th {
     visibility: hidden;
   }
 }
+
+/* --- CSS about button --- */
+#restart {
+  width: 20%;
+}
+

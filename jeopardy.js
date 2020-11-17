@@ -29,6 +29,7 @@ async function getCategoryIds() {
 
 async function getCategory(catId) {
     let res = await axios.get(`${basicURL}category?id=${catId}`);
+    console.log(res.data);
     // get titles
     let title = res.data.title;
     // get clues
@@ -36,7 +37,7 @@ async function getCategory(catId) {
     let clues = randomClues.map(each => ({
         question: each.question,
         answer: each.answer,
-        showing: null
+        showing: null,
         })
     )  
 
@@ -79,7 +80,7 @@ async function fillTable() {
         for (let j = 0; j < column; j++) {
             let td = document.createElement('td');
             td.setAttribute('id', `${i}-${j}`);
-            td.innerText='?';
+            td.innerText=`$${200 + i * 200}`;
             trBody.append(td);
         }        
         tableBody.append(trBody);
@@ -98,6 +99,7 @@ async function fillTable() {
 
 function handleClick(evt) {
     let [rowIndex, colIndex] = evt.target.id.split('-');
+    console.log(category[colIndex].clues[rowIndex]);
     let curCell = category[colIndex].clues[rowIndex];
     let curshowing = curCell.showing;
 
@@ -107,7 +109,14 @@ function handleClick(evt) {
     } else if (curshowing === 'question') {
         $(`#${rowIndex}-${colIndex}`).html(`${curCell.answer}`);
         curCell.showing = 'answer';
-    } else {
+    } else if (curshowing === 'answer') {
+        $(`#${rowIndex}-${colIndex}`).html(`<p>Is your answer correct?</p></br><button class='yes' >Yes</button> <button class='no'>No</button>`)
+        applyValue(rowIndex, colIndex);
+        curCell.showing = 'question';
+    } else if (curshowing === 'no') {
+        $(`#${rowIndex}-${colIndex}`).html(`${curCell.answer}`);
+        curCell.showing = null;
+    } else if (curshowing === 'done') {
         return;
     }
 }
@@ -128,7 +137,7 @@ function showLoadingView() {
 /** Remove the loading spinner and update the button used to fetch data. */
 
 function hideLoadingView() {
-    const loader = document.querySelector('.loader');
+    let loader = document.querySelector('.loader');
     loader.className += ' hidden';
 }
 
@@ -171,36 +180,114 @@ async function setupAndStart() {
     fillTable();
 }
 
+/** Get All players's name: **/
+function getPlayersName() {
+    allPlayers = document.querySelectorAll('input');
+    let showPlayers = document.querySelector('.players');
+    console.log(allPlayers);
+
+    allPlayers.forEach((each, index) => {
+        let player = document.createElement('span');
+        if (each.value === '') {
+            player.innerHTML = `Player ${index + 1}: <span class=${index}>0</span> `
+        } else {
+            player.innerHTML = `${each.value}: <span class=${index}>0</span> `
+        }
+        showPlayers.append(player);
+    });
+}
+
+/** apply values to players: **/
+function applyValue(rowIndex, colIndex) {
+    // under case which answer is correct
+    let yesValue = document.querySelector('.yes');
+        yesValue.addEventListener('click', function(){
+        console.log(rowIndex);
+        console.log(colIndex);
+        let numbers = document.querySelectorAll(`input[type=text]`)
+        $(`#${rowIndex}-${colIndex}`).html(`<p>Which Player ?</p></br><input class=getPlayer type=number min=1 max=${numbers.length} value=1></input> <input class=submitValue type=submit></input>`);
+        $(`.submitValue`).on('click', function(){
+            // console.log('test!');
+            // console.log(rowIndex);
+            // console.log(colIndex);
+            let getPlayer = document.getElementsByClassName('getPlayer');
+            console.log(parseInt(rowIndex) + 1);
+            addValue(getPlayer[0].value, (parseInt(rowIndex)+1)*200);
+            $(`#${rowIndex}-${colIndex}`).html(`${category[colIndex].clues[rowIndex].answer}`);
+            category[colIndex].clues[rowIndex].showing = 'done';
+            console.log(category[colIndex].clues[rowIndex].showing);
+        });
+    });
+    // under case which answer is correct
+    let noValue = document.querySelector('.no');
+        noValue.addEventListener('click', function() {
+        $(`#${rowIndex}-${colIndex}`).html(`${category[colIndex].clues[rowIndex].answer}`);
+        category[colIndex].clues[rowIndex].showing = 'done';
+    });
+}
+
+/** apply values to the player who got the correct answer: **/
+function addValue(number, value) {
+    let allPlayers = document.querySelectorAll('input[type=text]');
+    // console.log(allPlayers[0].value);
+    allPlayers.forEach((each, index) => {
+        // console.log(typeof index+1);
+        // console.log(typeof number);
+        if (number == index + 1) {
+            console.log(allPlayers[index].value);
+            console.log(value);
+            console.log([index, value]);
+            let newValue = document.getElementsByClassName(`${index}`);
+            console.log(newValue[0].innerText);
+            newValue[0].innerText = parseInt(newValue[0].innerText) + value;        
+        }
+    });
+}
+
 /** On click of start / restart button, set up game. */
 // TODO
 
 let restartBtn = document.querySelector('button');
 restartBtn.addEventListener('click', function(){
-    restartClicked();
-    restartBtn.innerText = 'Restart Game';
+    // restartClicked();
+    if (startButton.innerText === 'Restart Game') {
+        document.querySelector('.players').innerHTML = '';
+        getPlayersName();
+        document.querySelector('.loader').classList.remove('hidden');
+        showLoadingView();
+        $(document).ready(async function () {
+            // showLoadingView();
+            hideLoadingView();
+            $('table').empty();
+            setupAndStart();
+        });
+    }
 })
-
-function restartClicked () {
-    document.querySelector('.loader').classList.remove('hidden');
-    showLoadingView();
-    $(document).ready(async function () {
-        // showLoadingView();
-        hideLoadingView();
-        $('table').empty();
-        setupAndStart();
-    });
-};
 
 /** On page load, add event handler for clicking clues */
 // TODO
-// window.addEventListener('load', function(){
-//     const loader = document.querySelector('.loader');
-//     console.log(loader);
-// });
-showLoadingView();
-$(document).ready(async function () {
-    // showLoadingView();
-    hideLoadingView();
-    setupAndStart();
-    $('body').on('click', 'td', handleClick);
-});
+
+let formBoard = document.querySelector('.setupGame')
+
+let gameBoard = document.querySelector('.startGame')
+gameBoard.style.display = 'none'
+
+let startButton = document.getElementById('restart')
+
+startButton.addEventListener('click', function () {
+    console.log(startButton.innerText);
+    if (startButton.innerHTML === 'Start Game') {
+        restartBtn.innerText = 'Restart Game';
+        formBoard.style.display = 'none'
+        showLoadingView();
+        $(document).ready(async function() {
+            hideLoadingView();
+            $('table').empty();
+            setupAndStart();
+            $('body').on('click', 'td', handleClick);
+            gameBoard.style.display = 'block';
+        })
+        getPlayersName();
+    }
+})
+
