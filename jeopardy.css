@@ -131,3 +131,8 @@ button, input:hover {
   width: 20%;
 }
 
+.addOneMore {
+  margin: 0.8rem;
+  padding: 0.3rem 0.5rem;
+}
+

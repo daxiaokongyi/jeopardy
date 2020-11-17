@@ -247,7 +247,7 @@ function addValue(number, value) {
 /** On click of start / restart button, set up game. */
 // TODO
 
-let restartBtn = document.querySelector('button');
+let restartBtn = document.querySelector('#restart');
 restartBtn.addEventListener('click', function(){
     // restartClicked();
     if (startButton.innerText === 'Restart Game') {
@@ -277,17 +277,31 @@ let startButton = document.getElementById('restart')
 startButton.addEventListener('click', function () {
     console.log(startButton.innerText);
     if (startButton.innerHTML === 'Start Game') {
-        restartBtn.innerText = 'Restart Game';
-        formBoard.style.display = 'none'
+        startButton.innerText = 'Restart Game';
+        startButton.style.display = 'none';
+        formBoard.style.display = 'none';
         showLoadingView();
+        
         $(document).ready(async function() {
             hideLoadingView();
             $('table').empty();
             setupAndStart();
             $('body').on('click', 'td', handleClick);
             gameBoard.style.display = 'block';
+            startButton.style.display = 'block';
         })
         getPlayersName();
     }
 })
 
+/** Add one more player if needed */
+document.getElementsByClassName('addOneMore')[0].addEventListener('click', function(event) {
+    event.preventDefault();
+    let numOfPlayers = document.querySelectorAll('input[type=text]').length;
+    if (numOfPlayers < 4) {
+    let divForNewPlayer = document.getElementsByClassName('ifOneMore');
+        console.log(divForNewPlayer);
+        $(divForNewPlayer).append(`<div><label for="playerOne">Player ${numOfPlayers + 1}: </label><input type="text" id=${numOfPlayers + 1}></div>`);
+        numOfPlayers += 1;
+    }
+});
