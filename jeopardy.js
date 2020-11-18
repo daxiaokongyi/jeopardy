@@ -1,4 +1,4 @@
-const basicURL = 'http://jservice.io/api/';
+const basicURL = 'https://jservice.io/api/';
 const row = 5;
 const column = 6;
 let category = [];
